@@ -1,0 +1,948 @@
+<?xml version="1.0"?>
+<!-- Simple example to demonstrate the Image control. -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	backgroundGradientColors="[#FFFFFF, #FFFFFF]"	
+	creationComplete="onLoad();"
+	layout="absolute" width="800" 
+	height="600"
+>
+
+<mx:Script>
+<![CDATA[
+	import mx.effects.Move;
+	import mx.effects.Blur;
+	import mx.effects.Fade;
+	import mx.effects.Zoom;
+	import mx.controls.Image;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	import flash.display.*;
+	
+	import mx.controls.Label;  
+	
+		
+	// Define tick of time in miliseconds:
+	private var TICK:int = 1000;
+
+	// Embed reusable assets:
+
+	[Embed("assets/white.png")]
+	private var WhiteStoneImage:Class;
+	
+	[Embed("assets/black.png")]
+	private var BlackStoneImage:Class;
+			
+	// Array of current white stones on the board:
+	private var whites:Array = new Array();
+
+	// Array of current black stones on the board:
+	private var blacks:Array = new Array();
+
+	// White score
+	private var scoreCountWhite:int = 0;
+
+	// Black score
+	private var scoreCountBlack:int = 0;
+
+	//////////////////////////////////////////////////////////
+	// Function exectued when the application loads:
+	//
+	private function onLoad():void { 
+
+		// Start the main presentation timer:
+			
+		var mainTimer:Timer = new Timer(1 * TICK, 0);
+		mainTimer.addEventListener(TimerEvent.TIMER, timePresentation);
+		mainTimer.start();
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Function that handlers main presentation timer events and kicks off various stages of the presentation:
+	//
+	private function timePresentation(event:TimerEvent):void {
+		
+		var ticks:int = event.target.currentCount;
+			
+		switch (ticks) {
+			case 1:
+				showPersonsScene();
+				break;				
+			case 5:
+				doBoardZoom();
+				break;
+			case 7:
+				showGame1Scene();
+				break;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Function that shows the first scene (with the two persons sitting across from eachtoher at a board)
+	//	
+	private function showPersonsScene():void {	
+			
+		// Fade-in both persons & the floor board:
+			
+		var fadeInPersonWhite:Fade;
+		fadeInPersonWhite = new Fade(personWhite);			
+		fadeInPersonWhite.duration = 3 * TICK;
+		fadeInPersonWhite.alphaFrom = 0;
+		fadeInPersonWhite.alphaTo = 1;
+		fadeInPersonWhite.end();
+		fadeInPersonWhite.play();
+		personWhite.visible = true;
+			
+		var fadeInPersonBlack:Fade;
+		fadeInPersonBlack = new Fade(personBlack);			
+		fadeInPersonBlack.duration = 3 * TICK;
+		fadeInPersonBlack.alphaFrom = 0;
+		fadeInPersonBlack.alphaTo = 1;
+		fadeInPersonBlack.end();
+		fadeInPersonBlack.play();
+		personBlack.visible = true;
+			
+		var fadeInBoardFloor:Fade;
+		fadeInBoardFloor = new Fade(boardFloor);			
+		fadeInBoardFloor.duration = 3 * TICK;
+		fadeInBoardFloor.alphaFrom = 0;
+		fadeInBoardFloor.alphaTo = 1;
+		fadeInBoardFloor.end();
+		fadeInBoardFloor.play();
+		boardFloor.visible = true;		
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Function that performs the board-zooming into the main position.
+	//	
+	private function doBoardZoom():void {
+
+		// Part 1: start board zoom / move:
+		
+		board.visible = true;
+		
+		var zoomBoard:Zoom = new Zoom(board);
+		zoomBoard.originX = 0;
+		zoomBoard.originY = 0;
+		zoomBoard.zoomWidthFrom = 0.001;
+		zoomBoard.zoomWidthTo = 1;
+		zoomBoard.zoomHeightFrom = 0.001;
+		zoomBoard.zoomHeightTo = 1;
+		zoomBoard.duration = 2 * TICK;
+		zoomBoard.end();
+		zoomBoard.play();			
+
+		var moveBoard:Move = new Move(board);
+		moveBoard.xFrom=400;
+		moveBoard.yFrom=415;
+		moveBoard.xTo = 150;
+		moveBoard.yTo = 50;
+		moveBoard.duration = 2 * TICK;
+		moveBoard.end();
+		moveBoard.play();
+			
+			
+		// Part 2: fade persons out:
+			
+		var fadeInPersonWhite:Fade;
+		fadeInPersonWhite = new Fade(personWhite);			
+		fadeInPersonWhite.duration = 2 * TICK;
+		fadeInPersonWhite.alphaFrom = 1;
+		fadeInPersonWhite.alphaTo = 0;
+		fadeInPersonWhite.end();
+		fadeInPersonWhite.play();
+			
+		var fadeInPersonBlack:Fade;
+		fadeInPersonBlack = new Fade(personBlack);			
+		fadeInPersonBlack.duration = 2 * TICK;
+		fadeInPersonBlack.alphaFrom = 1;
+		fadeInPersonBlack.alphaTo = 0;
+		fadeInPersonBlack.end();
+		fadeInPersonBlack.play();
+
+	}
+
+
+	//////////////////////////////////////////////////////////
+	// Function that shows the whole game 1 animation.
+	//			
+	private function showGame1Scene():void {		
+		
+		var sceneTimer:Timer = new Timer(1 * TICK, 0);
+		sceneTimer.addEventListener(TimerEvent.TIMER, timeGame1Scene);
+		sceneTimer.start();				
+	}	
+	
+	
+	//////////////////////////////////////////////////////////
+	// Function that handles game 1 scene timing of animations:
+	//			
+	private function timeGame1Scene(event:TimerEvent):void {		
+		
+		var ticks:int = event.target.currentCount;
+			
+		switch (ticks) {
+
+/*
+			case 1:
+				showScoreCounts();
+				clearDrawings();
+				showScoringScene();
+				break;	
+			case 4:
+				showWhiteWin();	
+				break;	
+
+*/
+
+ 
+			case 1 + (4 * 0):
+				placeStoneBlack(7, 3);
+				break;
+			case 1 + (4 * 1):
+				placeStoneWhite(4, 7);
+				break;				
+			case 1 + (4 * 2):
+				placeStoneBlack(6, 6);
+				break;				
+			case 1 + (4 * 3):
+				placeStoneWhite(4, 3);
+				break;						
+			case 1 + (4 * 4):
+				placeStoneBlack(7, 4);
+				break;							
+			case 1 + (4 * 5):
+				placeStoneWhite(6, 8);
+				break;						
+			case 1 + (4 * 6):
+				placeStoneBlack(7, 7);
+				break;							
+			case 1 + (4 * 7):
+				placeStoneWhite(7, 8);
+				break;				
+			case 1 + (4 * 8):
+				placeStoneBlack(8, 8);
+				break;						
+			case 1 + (4 * 9):
+				placeStoneWhite(6, 7);
+				break;							
+			case 1 + (4 * 10):
+				placeStoneBlack(8, 6);
+				break;							
+			case 1 + (4 * 11):
+				placeStoneWhite(5, 6);
+				break;							
+			case 1 + (4 * 12):
+				placeStoneBlack(5, 5);
+				break;							
+			case 1 + (4 * 13):
+				placeStoneWhite(4, 5);
+				break;							
+			case 1 + (4 * 14):
+				placeStoneBlack(6, 5);
+				break;							
+			case 1 + (4 * 15):
+				placeStoneWhite(6, 2);
+				break;						
+			case 1 + (4 * 16):
+				placeStoneBlack(7, 2);
+				break;							
+			case 1 + (4 * 17):
+				placeStoneWhite(6, 3);
+				break;	
+			case 1 + (4 * 18):
+				placeStoneBlack(5, 4);
+				break;				
+			case 1 + (4 * 19):
+				placeStoneWhite(4, 4);
+				break;	
+			case 1 + (4 * 20):
+				placeStoneBlack(5, 3);
+				break;					
+			case 1 + (4 * 21):
+				placeStoneWhite(5, 2);
+				break;	
+			case 1 + (4 * 22):
+				placeStoneBlack(7, 1);
+				break;					
+			case 1 + (4 * 23):
+				placeStoneWhite(6, 1);
+				break;		
+			case 1 + (4 * 24):
+				placeStoneBlack(6, 4);
+				break;					
+			case 1 + (4 * 25):
+				placeStoneWhite(4, 2);
+				break;						
+			case 1 + (4 * 26):
+				placeStoneBlack(7, 9);
+				break;							
+			case 1 + (4 * 27):
+				placeStoneWhite(6, 9);
+				break;
+			case 1 + (4 * 28):
+				placeStoneBlack(8, 9);
+				break;	
+			case 1 + (4 * 29):
+				passWhite();
+				break;			
+			case 1 + (4 * 30):
+				passBlack();
+				break;
+			case 1 + (4 * 30) + 1:
+				showScoreCounts();
+				break;
+			case 1 + (4 * 30) + 2:
+				scoreBoardPointBlack(8,1);
+				break;
+			case 1 + (4 * 30) + 3:
+				scoreBoardPointBlack(9,1);
+				break;
+			case 1 + (4 * 30) + 4:
+				scoreBoardPointBlack(8,2);
+				break;
+			case 1 + (4 * 30) + 5:
+				scoreBoardPointBlack(9,2);
+				break;
+			case 1 + (4 * 30) + 6:
+				scoreBoardPointBlack(8,3);
+				break;
+			case 1 + (4 * 30) + 7:
+				scoreBoardPointBlack(9,3);
+				break;
+			case 1 + (4 * 30) + 8:
+				scoreBoardPointBlack(8,4);
+				break;
+			case 1 + (4 * 30) + 9:
+				scoreBoardPointBlack(9,4);
+				break;
+			case 1 + (4 * 30) + 10:
+				scoreBoardPointBlack(7,5);
+				break;
+			case 1 + (4 * 30) + 11:
+				scoreBoardPointBlack(8,5);
+				break;
+			case 1 + (4 * 30) + 12:
+				scoreBoardPointBlack(9,5);
+				break;
+			case 1 + (4 * 30) + 13:
+				scoreBoardPointBlack(7,6);
+				break;
+			case 1 + (4 * 30) + 14:
+				scoreBoardPointBlack(9,6);
+				break;
+			case 1 + (4 * 30) + 15:
+				scoreBoardPointBlack(8,7);
+				break;
+			case 1 + (4 * 30) + 16:
+				scoreBoardPointBlack(9,7);
+				break;
+			case 1 + (4 * 30) + 17:
+				scoreBoardPointBlack(9,8);
+				break;
+			case 1 + (4 * 30) + 18:
+				scoreBoardPointBlack(9,9);
+				break;
+
+			case 1 + (4 * 30) + 19:
+				scoreBoardPointWhite(1,1);
+				break;
+			case 1 + (4 * 30) + 20:
+				scoreBoardPointWhite(2,1);
+				break;
+			case 1 + (4 * 30) + 21:
+				scoreBoardPointWhite(3,1);
+				break;
+			case 1 + (4 * 30) + 22:
+				scoreBoardPointWhite(4,1);
+				break;
+			case 1 + (4 * 30) + 23:
+				scoreBoardPointWhite(5,1);
+				break;
+			case 1 + (4 * 30) + 24:
+				scoreBoardPointWhite(1,2);
+				break;
+			case 1 + (4 * 30) + 25:
+				scoreBoardPointWhite(2,2);
+				break;
+			case 1 + (4 * 30) + 26:
+				scoreBoardPointWhite(3,2);
+				break;
+			case 1 + (4 * 30) + 27:
+				scoreBoardPointWhite(1,3);
+				break;
+			case 1 + (4 * 30) + 28:
+				scoreBoardPointWhite(2,3);
+				break;
+			case 1 + (4 * 30) + 29:
+				scoreBoardPointWhite(3,3);
+				break;
+			case 1 + (4 * 30) + 30:
+				scoreBoardPointWhite(1,4);
+				break;
+			case 1 + (4 * 30) + 31:
+				scoreBoardPointWhite(2,4);
+				break;
+			case 1 + (4 * 30) + 32:
+				scoreBoardPointWhite(3,4);
+				break;
+			case 1 + (4 * 30) + 33:
+				scoreBoardPointWhite(1,5);
+				break;
+			case 1 + (4 * 30) + 34:
+				scoreBoardPointWhite(2,5);
+				break;
+			case 1 + (4 * 30) + 35:
+				scoreBoardPointWhite(3,5);
+				break;
+			case 1 + (4 * 30) + 36:
+				scoreBoardPointWhite(1,6);
+				break;
+			case 1 + (4 * 30) + 37:
+				scoreBoardPointWhite(2,6);
+				break;
+			case 1 + (4 * 30) + 38:
+				scoreBoardPointWhite(3,6);
+				break;
+			case 1 + (4 * 30) + 39:
+				scoreBoardPointWhite(4,6);
+				break;
+			case 1 + (4 * 30) + 40:
+				scoreBoardPointWhite(1,7);
+				break;
+			case 1 + (4 * 30) + 41:
+				scoreBoardPointWhite(2,7);
+				break;
+			case 1 + (4 * 30) + 42:
+				scoreBoardPointWhite(3,7);
+				break;
+			case 1 + (4 * 30) + 43:
+				scoreBoardPointWhite(5,7);
+				break;
+			case 1 + (4 * 30) + 44:
+				scoreBoardPointWhite(1,8);
+				break;
+			case 1 + (4 * 30) + 45:
+				scoreBoardPointWhite(2,8);
+				break;
+			case 1 + (4 * 30) + 46:
+				scoreBoardPointWhite(3,8);
+				break;
+			case 1 + (4 * 30) + 47:
+				scoreBoardPointWhite(4,8);
+				break;
+			case 1 + (4 * 30) + 48:
+				scoreBoardPointWhite(5,8);
+				break;
+			case 1 + (4 * 30) + 49:
+				scoreBoardPointWhite(1,9);
+				break;
+			case 1 + (4 * 30) + 50:
+				scoreBoardPointWhite(2,9);
+				break;
+			case 1 + (4 * 30) + 51:
+				scoreBoardPointWhite(3,9);
+				break;
+			case 1 + (4 * 30) + 52:
+				scoreBoardPointWhite(4,9);
+				break;
+			case 1 + (4 * 30) + 53:
+				scoreBoardPointWhite(5,9);
+				break;	
+			case 1 + (4 * 30) + 54 + 1:
+				clearDrawings();
+				showScoringScene();
+				break;	
+			case 1 + (4 * 30) + 54 + 4:
+				showWhiteWin();	
+				break;					
+										
+		}				
+	}
+		
+		
+	//////////////////////////////////////////////////////////
+	// Function that animates putting of a white stone on given position
+	//			
+	private function placeStoneWhite(x:int, y:int):void {
+	
+		// Determine from and to x/y positions for both the hand and the stone:
+
+		var stoneFromX:int = 0;
+		var stoneFromY:int = 420;
+		
+		var stoneToX:int = calcualteStoneX(x);
+		var stoneToY:int = calcualteStoneY(y);
+
+		
+		var handFromX:int = stoneFromX - 152;
+		var handFromY:int = stoneFromY - 64;
+		
+		var handToX:int = stoneToX - 152;
+		var handToY:int = stoneToY - 64;
+
+		// Move the invisible hand and stone objects to their from-positions.
+
+		handWhite.alpha = 0;
+		handWhite.visible = true;
+		handWhite.x = handFromX;
+		handWhite.y = handFromY;
+	
+		var stone:Image = new Image();
+		stone.source = WhiteStoneImage;
+		stone.alpha = 0;
+		stone.visible = true;
+		stone.x = stoneFromX;
+		stone.y = stoneFromY;
+		panel.addChild(stone);
+		
+		// Remember this stone so that it can be later cleared:
+		whites.push(stone);
+		
+		
+		// Move the hand 	
+		
+		panel.setChildIndex(handWhite, panel.numChildren - 1);
+		
+		var moveHand:Move = new Move(handWhite);
+		moveHand.xFrom=handFromX;
+		moveHand.yFrom=handFromY;
+		moveHand.xTo = handToX;
+		moveHand.yTo = handToY;
+		moveHand.duration = 2 * TICK;
+		moveHand.end();
+		moveHand.play();
+		
+		
+		// Move the stone 
+		
+		var moveStone:Move = new Move(stone);
+		moveStone.xFrom=stoneFromX;
+		moveStone.yFrom=stoneFromY;
+		moveStone.xTo = stoneToX;
+		moveStone.yTo = stoneToY;
+		moveStone.duration = 2 * TICK;
+		moveStone.end();
+		moveStone.play();		
+		
+		
+		// Fade-in the hand:
+		 
+		var fadeInHand:Fade = new Fade(handWhite);			
+		fadeInHand.duration = 1 * TICK;
+		fadeInHand.alphaFrom = 0;
+		fadeInHand.alphaTo = 0.7;
+		fadeInHand.end();
+		fadeInHand.play();	
+		
+		
+		// Fade-in the stone:
+		
+		var fadeInStone:Fade = new Fade(stone);			
+		fadeInStone.duration = 1 * TICK;
+		fadeInStone.alphaFrom = 0;
+		fadeInStone.alphaTo = 1;
+		fadeInStone.end();
+		fadeInStone.play();
+		
+		var timeEvent:Timer = new Timer(2 * TICK, 1);
+		timeEvent.addEventListener(TimerEvent.TIMER, fadeOutWhiteHand);
+		timeEvent.start();	
+	}
+	
+		
+	//////////////////////////////////////////////////////////
+	// Function that animates putting of a black stone on given position
+	//			
+	private function placeStoneBlack(x:int, y:int):void {
+	
+		// Determine from and to x/y positions for both the hand and the stone:
+
+		var stoneFromX:int = 800;
+		var stoneFromY:int = 220;
+		
+		var stoneToX:int = calcualteStoneX(x);
+		var stoneToY:int = calcualteStoneY(y);
+
+		
+		var handFromX:int = stoneFromX - 0;
+		var handFromY:int = stoneFromY - 84;
+		
+		var handToX:int = stoneToX - 0;
+		var handToY:int = stoneToY - 84;
+
+		// Move the invisible hand and stone objects to their from-positions.
+
+		handBlack.alpha = 0;
+		handBlack.visible = true;
+		handBlack.x = handFromX;
+		handBlack.y = handFromY;
+	
+		var stone:Image = new Image();
+		stone.source = BlackStoneImage;
+		stone.alpha = 0;
+		stone.visible = true;
+		stone.x = stoneFromX;
+		stone.y = stoneFromY;
+		panel.addChild(stone);
+		
+		// Remember this stone so that it can be later cleared:
+		blacks.push(stone);
+		
+		
+		// Move the hand 	
+		
+		panel.setChildIndex(handBlack, panel.numChildren - 1);
+		
+		var moveHand:Move = new Move(handBlack);
+		moveHand.xFrom=handFromX;
+		moveHand.yFrom=handFromY;
+		moveHand.xTo = handToX;
+		moveHand.yTo = handToY;
+		moveHand.duration = 2 * TICK;
+		moveHand.end();
+		moveHand.play();
+		
+		
+		// Move the stone 
+		
+		var moveStone:Move = new Move(stone);
+		moveStone.xFrom=stoneFromX;
+		moveStone.yFrom=stoneFromY;
+		moveStone.xTo = stoneToX;
+		moveStone.yTo = stoneToY;
+		moveStone.duration = 2 * TICK;
+		moveStone.end();
+		moveStone.play();		
+		
+		
+		// Fade-in the hand:
+		 
+		var fadeInHand:Fade = new Fade(handBlack);			
+		fadeInHand.duration = 1 * TICK;
+		fadeInHand.alphaFrom = 0;
+		fadeInHand.alphaTo = 0.7;
+		fadeInHand.end();
+		fadeInHand.play();	
+		
+		
+		// Fade-in the stone:
+		
+		var fadeInStone:Fade = new Fade(stone);			
+		fadeInStone.duration = 1 * TICK;
+		fadeInStone.alphaFrom = 0;
+		fadeInStone.alphaTo = 1;
+		fadeInStone.end();
+		fadeInStone.play();
+		
+		var timeEvent:Timer = new Timer(2 * TICK, 1);
+		timeEvent.addEventListener(TimerEvent.TIMER, fadeOutBlackHand);
+		timeEvent.start();	
+	}	
+		
+	//////////////////////////////////////////////////////////
+	// Function that animates white passing
+	//			
+	private function passWhite():void {
+	
+		// Determine from and to x/y positions for the hand:
+		
+		var handFromX:int = -150;
+		var handFromY:int = 400;
+		
+		var handToX:int = -40;
+		var handToY:int = handFromY;
+
+		// Move the hand 
+
+		handWhite.alpha = 0;
+		handWhite.visible = true;
+		handWhite.x = handFromX;
+		handWhite.y = handFromY;
+		
+		var moveHand:Move = new Move(handWhite);
+		moveHand.xFrom=handFromX;
+		moveHand.yFrom=handFromY;
+		moveHand.xTo = handToX;
+		moveHand.yTo = handToY;
+		moveHand.duration = 2 * TICK;
+		moveHand.end();
+		moveHand.play();
+				
+		// Fade-in the hand:
+		 
+		var fadeInHand:Fade = new Fade(handWhite);			
+		fadeInHand.duration = 1 * TICK;
+		fadeInHand.alphaFrom = 0;
+		fadeInHand.alphaTo = 0.7;
+		fadeInHand.end();
+		fadeInHand.play();	
+	}
+	
+	
+	//////////////////////////////////////////////////////////
+	// Function that animates black passing
+	//			
+	private function passBlack():void {
+	
+		// Determine from and to x/y positions for the hand:
+		
+		var handFromX:int = 750;
+		var handFromY:int = 0;
+		
+		var handToX:int = 640;
+		var handToY:int = 0;
+
+		// Move the hand 
+
+		handBlack.alpha = 0;
+		handBlack.visible = true;
+		handBlack.x = handFromX;
+		handBlack.y = handFromY;
+		
+		var moveHand:Move = new Move(handBlack);
+		moveHand.xFrom=handFromX;
+		moveHand.yFrom=handFromY;
+		moveHand.xTo = handToX;
+		moveHand.yTo = handToY;
+		moveHand.duration = 2 * TICK;
+		moveHand.end();
+		moveHand.play();
+				
+		// Fade-in the hand:
+		 
+		var fadeInHand:Fade = new Fade(handBlack);			
+		fadeInHand.duration = 1 * TICK;
+		fadeInHand.alphaFrom = 0;
+		fadeInHand.alphaTo = 0.7;
+		fadeInHand.end();
+		fadeInHand.play();	
+	}	
+	
+
+	//////////////////////////////////////////////////////////
+	// Function that animates in the score counts 
+	//			
+	private function showScoreCounts():void {
+	
+		scoreCountWhite = 0;
+		scoreCountBlack = 0;
+		
+		refreshScoreCounts();
+		
+		var fadeWhite:Fade = new Fade(scoreLabelWhite);			
+		fadeWhite.duration = 5 * TICK;
+		fadeWhite.alphaFrom = 0;
+		fadeWhite.alphaTo = 1;
+		fadeWhite.end();
+		fadeWhite.play();
+
+		var fadeBlack:Fade = new Fade(scoreLabelBlack);			
+		fadeBlack.duration = 5 * TICK;
+		fadeBlack.alphaFrom = 0;
+		fadeBlack.alphaTo = 1;
+		fadeBlack.end();
+		fadeBlack.play();		
+	}
+
+
+	//////////////////////////////////////////////////////////
+	// Function that animates in the score counts 
+	//			
+	private function refreshScoreCounts():void {
+	
+		scoreLabelWhite.text = scoreCountWhite.toString();
+		scoreLabelBlack.text = scoreCountBlack.toString();
+		
+	}	
+	
+	
+
+	//////////////////////////////////////////////////////////
+	// Function that fades the white hand out no matter where it is:
+	//			
+	private function fadeOutWhiteHand(event:TimerEvent):void {
+	
+		var fadeOutHand:Fade = new Fade(handWhite);			
+		fadeOutHand.duration = 1 * TICK;
+		fadeOutHand.alphaFrom = 0.7;
+		fadeOutHand.alphaTo = 0;
+		fadeOutHand.end();
+		fadeOutHand.play();
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Function that fades the black hand out no matter where it is:
+	//			
+	private function fadeOutBlackHand(event:TimerEvent):void {
+	
+		var fadeOutHand:Fade = new Fade(handBlack);			
+		fadeOutHand.duration = 1 * TICK;
+		fadeOutHand.alphaFrom = 0.7;
+		fadeOutHand.alphaTo = 0;
+		fadeOutHand.end();
+		fadeOutHand.play();
+	}	
+	
+	//////////////////////////////////////////////////////////
+	// Function that calculates the X cooridnate for a stone given its x position (0...8)
+	//	
+	private function calcualteStoneX(x:int):int {
+		var result:int = ((x - 1) * 56) + 150;
+		return result;
+	}	
+
+
+	//////////////////////////////////////////////////////////
+	// Function that calculates the Y cooridnate for a stone given its y position (0...8)
+	//	
+	private function calcualteStoneY(y:int):int {
+		var result:int = ((y - 1) * 56) + 53;
+		return result;
+	}	
+
+	
+	//////////////////////////////////////////////////////////
+	// Function that display debug information.
+	//			
+	private function DEBUG(message:String):void {		
+		
+		debug.text += "\n" + message;
+	}	
+	
+	//////////////////////////////////////////////////////////
+	// Function that animates counting of a white point on the board
+	//			
+	private function scoreBoardPointWhite(x:int, y:int):void {
+	
+		scoreCountWhite++;
+
+		var toX:int = calcualteStoneX(x) + 25;
+		var toY:int = calcualteStoneY(y) + 25;
+	
+		drawings.graphics.clear();		
+		drawings.graphics.lineStyle(4, 0xb94d4d, 1);
+		drawings.graphics.moveTo(100, 430);
+		drawings.graphics.lineTo(toX, toY);		
+
+		refreshScoreCounts();
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Function that animates counting of a black point on the board
+	//			
+	private function scoreBoardPointBlack(x:int, y:int):void {
+	
+		scoreCountBlack++;
+
+		var toX:int = calcualteStoneX(x) + 24;
+		var toY:int = calcualteStoneY(y) + 24;
+	
+		drawings.graphics.clear();		
+		drawings.graphics.lineStyle(4, 0x4d609e, 1);
+		drawings.graphics.moveTo(715, 180);
+		drawings.graphics.lineTo(toX, toY);		
+
+		refreshScoreCounts();
+	}	
+	
+		
+	//////////////////////////////////////////////////////////
+	// Function that clears the drawings left behind (such as score arrows).
+	//			
+	private function clearDrawings():void {
+	
+		drawings.graphics.clear();				
+
+	}
+	
+	
+	//////////////////////////////////////////////////////////
+	// Function that fades everything else out and just shows the scoring scene.
+	//			
+	private function showScoringScene():void {
+	
+		var fadeOutPanel:Fade = new Fade(panel);			
+		fadeOutPanel.duration = 1 * TICK;
+		fadeOutPanel.alphaFrom = 1;
+		fadeOutPanel.alphaTo = 0;
+		fadeOutPanel.end();
+		fadeOutPanel.play();	
+	
+		var scoreLabelMoveWhite:Move = new Move(scoreLabelWhite);
+		scoreLabelMoveWhite.xFrom = scoreLabelWhite.x;
+		scoreLabelMoveWhite.yFrom = scoreLabelWhite.y;
+		scoreLabelMoveWhite.xTo = 320;
+		scoreLabelMoveWhite.yTo = 200;
+		scoreLabelMoveWhite.duration = 2 * TICK;
+		scoreLabelMoveWhite.end();
+		scoreLabelMoveWhite.play();
+
+		var scoreLabelMoveBlack:Move = new Move(scoreLabelBlack);
+		scoreLabelMoveBlack.xFrom = scoreLabelBlack.x;
+		scoreLabelMoveBlack.yFrom = scoreLabelBlack.y;
+		scoreLabelMoveBlack.xTo = 445;
+		scoreLabelMoveBlack.yTo = 200;
+		scoreLabelMoveBlack.duration = 2 * TICK;
+		scoreLabelMoveBlack.end();
+		scoreLabelMoveBlack.play();
+
+	}	
+
+
+	//////////////////////////////////////////////////////////
+	// Function that animates emotions of the game result: white wins
+	//			
+	private function showWhiteWin():void {
+
+		var fadeInWhite:Fade = new Fade(happyWhite);			
+		fadeInWhite.duration = 2 * TICK;
+		fadeInWhite.alphaFrom = 0;
+		fadeInWhite.alphaTo = 1;
+		fadeInWhite.end();
+		fadeInWhite.play();	
+
+		var fadeInBlack:Fade = new Fade(sadBlack);			
+		fadeInBlack.duration = 2 * TICK;
+		fadeInBlack.alphaFrom = 0;
+		fadeInBlack.alphaTo = 1;
+		fadeInBlack.end();
+		fadeInBlack.play();	
+	
+	}
+	
+
+]]>
+</mx:Script>
+
+<mx:Canvas id="panel" width="800" height="600" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" x="0" y="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+	<mx:Image id="personWhite" source="@Embed('assets/personWhite.png')" visible="false" x="100" y="200" />
+	<mx:Image id="personBlack" source="@Embed('assets/personBlack.png')" visible="false" x="500" y="190" />
+	<mx:Image id="boardFloor" source="@Embed('assets/boardFloor.png')" visible="false" x="300" y="400" />
+	<mx:Image id="board" source="@Embed('assets/board.png')" visible="false" x="400" y="415" scaleX="0.001" scaleY="0.001" />    
+	<mx:Image id="handWhite" source="@Embed('assets/handWhite.png')" visible="false" x="0" y="0" alpha="0" />    
+	<mx:Image id="handBlack" source="@Embed('assets/handBlack.png')" visible="false" x="0" y="0" alpha="0" />    
+
+	<mx:TextArea id="debug" width="400" height="50" x="0" y="550" visible="false"/>
+
+</mx:Canvas>
+    
+<mx:Canvas id="drawings" width="800" height="600" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" x="0" y="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">    
+</mx:Canvas>    
+   
+   
+<mx:Canvas id="scores" width="800" height="600" paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" x="0" y="0" verticalScrollPolicy="off" horizontalScrollPolicy="off">    
+	<mx:Label id="scoreLabelWhite" fontSize="35" color="0xb94d4d" text="" alpha="0" visible="true" x="50" y="400" />
+	<mx:Label id="scoreLabelBlack" fontSize="35" color="0x4d609e" text="" alpha="0" visible="true" x="720" y="150" />
+	
+	<mx:Image id="happyWhite" source="@Embed('assets/happyWhite.png')" alpha="0" visible="true" x="100" y="200" />
+	<mx:Image id="happyBlack" source="@Embed('assets/happyBlack.png')" alpha="0" visible="true" x="500" y="190" />
+
+	<mx:Image id="sadWhite" source="@Embed('assets/sadWhite.png')" alpha="0" visible="true" x="100" y="200" />
+	<mx:Image id="sadBlack" source="@Embed('assets/sadBlack.png')" alpha="0" visible="true" x="500" y="190" />
+
+</mx:Canvas>     
+
+
+</mx:Application>          
+
